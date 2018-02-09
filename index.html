@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
   <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
+
 <body>
   <div id="app">
     <v-app>
@@ -20,18 +22,46 @@
       </v-content>
     </v-app>
   </div>
- 
+
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
   <script>
-    const data = {
-      picker: null,
-      picker2: null
+
+    function getSearchParams(k) {
+      var p = {};
+      location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (s, k, v) { p[k] = v })
+      return k ? p[k] : p;
     }
-    new Vue({ el: '#app', data })
+
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          picker: null,
+        }
+      },
+      watch: {
+        picker: function (date) {
+          userId = getSearchParams('userId')
+          callbackUrl = getSearchParams('callbackUrl')
+          console.log(userId)
+          fetch(callbackUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ date, userId }),
+          }).then(res => {
+            window.close()
+            console.log(res)
+          }).catch(console.error)
+        },
+      }
+    })
   </script>
   <script>
 
   </script>
 </body>
+
 </html>
